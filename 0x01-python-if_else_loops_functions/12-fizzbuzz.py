@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# 12-fizzbuzz.py
+fizzbuzz = __import__('12-fizzbuzz').fizzbuzz
 
 def fizzbuzz():
 """
@@ -18,3 +18,5 @@ def fizzbuzz():
             print("Buzz ", end="")
         else:
             print("{} ".format(number), end="")
+fizzbuzz()
+print("")

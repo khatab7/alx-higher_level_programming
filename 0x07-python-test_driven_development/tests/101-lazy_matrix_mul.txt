@@ -1,0 +1,33 @@
+>>> from 101-lazy_matrix_mul import lazy_matrix_mul
+
+# Test case 1: Matrices with compatible dimensions
+>>> m_a = [[1, 2], [3, 4]]
+>>> m_b = [[1, 2], [3, 4]]
+>>> lazy_matrix_mul(m_a, m_b)
+[[7, 10], [15, 22]]
+
+# Test case 2: Matrices with incompatible dimensions
+>>> m_a = [[1, 2]]
+>>> m_b = [[3, 4], [5, 6]]
+>>> lazy_matrix_mul(m_a, m_b)
+Traceback (most recent call last):
+    ...
+ValueError: Matrices are not compatible for multiplication.
+
+# Test case 3: Matrices with one empty matrix
+>>> m_a = []
+>>> m_b = [[1, 2], [3, 4]]
+>>> lazy_matrix_mul(m_a, m_b)
+[]
+
+# Test case 4: Matrices with both empty matrices
+>>> m_a = []
+>>> m_b = []
+>>> lazy_matrix_mul(m_a, m_b)
+[]
+
+# Test case 5: Matrices with negative size
+>>> m_a = [[1, 2], [3, 4]]
+>>> m_b = [[-1, -2], [-3, -4]]
+>>> lazy_matrix_mul(m_a, m_b)
+[[-7, -10], [-15, -22]]

@@ -1,25 +1,20 @@
 #!/usr/bin/python3
-"""Module built for Python 0x07 task 2. Error in project formatting scheme \
-advances file numbering +1 for every task after 0.
+"""3-say_my_name.py
+    This module contains a function 'say_my_name'
+    you can test the function with the command
+
+    python3 -m doctest -v ./test/3-say_my_name.txt
 """
 
 
 def say_my_name(first_name, last_name=""):
-    """Function that prints "My name is ", followed by the one or two string \
-arguments given.
-
+    """Prints a string containing arguments
     Args:
-        first_name (str): string representing first name
-        last_name (str): string representing last name
-
+        first_name (str)
+        last_name (str)
     """
-
-    if not isinstance(first_name, str):
+    if isinstance(first_name, str) is False:
         raise TypeError("first_name must be a string")
-    if not isinstance(last_name, str):
+    if isinstance(last_name, str) is False:
         raise TypeError("last_name must be a string")
-
-    if last_name:
-        print(f"My name is {first_name} {last_name}")
-    else:
-        print(f"My name is {first_name}")
+    print(f"My name is {first_name} {last_name}")

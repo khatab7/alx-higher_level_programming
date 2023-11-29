@@ -1,61 +1,36 @@
-# Test case 1: Integer matrix, dividing by a positive integer
-matrix = [
-    [10, 20, 30],
-    [40, 50, 60],
-    [70, 80, 90]
-]
-divisor = 5
-result = matrix_divided(matrix, divisor)
-print(result)
-# Output:
-# [[2.0, 4.0, 6.0], [8.0, 10.0, 12.0], [14.0, 16.0, 18.0]]
+Test file for 2-matrix_divided.py
+==================================
 
-# Test case 2: Float matrix, dividing by a negative float
-matrix = [
-    [1.5, 2.5, 3.5],
-    [4.5, 5.5, 6.5],
-    [7.5, 8.5, 9.5]
-]
-divisor = -2.5
-result = matrix_divided(matrix, divisor)
-print(result)
-# Output:
-# [[-0.6, -1.0, -1.4], [-1.8, -2.2, -2.6], [-3.0, -3.4, -3.8]]
+>>> matrix_divided = __import__('2-matrix_divided').matrix_divided
 
-# Test case 3: Empty matrix
-matrix = []
-divisor = 2
-result = matrix_divided(matrix, divisor)
-print(result)
-# Output:
-# []
+>>> matrix_divided()
+Traceback (most recent call last):
+TypeError: matrix_divided() missing 2 required positional arguments: 'matrix' and 'div'
 
-# Test case 4: Matrix with rows of different sizes
-matrix = [
-    [1, 2, 3],
-    [4, 5],
-    [6, 7, 8]
-]
-divisor = 2
-# Should raise TypeError: Each row of the matrix must have the same size
-result = matrix_divided(matrix, divisor)
+>>> matrix_divided([1], float("inf"))
+Traceback (most recent call last):
+TypeError: matrix must be a matrix (list of lists) of integers/floats
 
-# Test case 5: Matrix with non-numeric elements
-matrix = [
-    [1, 2, 3],
-    [4, "5", 6],
-    [7, 8, 9]
-]
-divisor = 3
-# Should raise TypeError: matrix must be a matrix (list of lists) of integers/floats
-result = matrix_divided(matrix, divisor)
+>>> matrix_divided([[1]], float("inf"))
+[[0.0]]
 
-# Test case 6: Dividing by zero
-matrix = [
-    [1, 2, 3],
-    [4, 5, 6],
-    [7, 8, 9]
-]
-divisor = 0
-# Should raise ZeroDivisionError: division by zero
-result = matrix_divided(matrix, divisor)
+>>> matrix_divided([[1]], float("NaN"))
+[[nan]]
+
+>>> matrix_divided([[1]], "NaN")
+Traceback (most recent call last):
+TypeError: div must be a number
+
+>>> matrix_divided([[1]], 0)
+Traceback (most recent call last):
+ZeroDivisionError: division by zero
+
+>>> matrix_divided([[1], []], float("NaN"))
+Traceback (most recent call last):
+TypeError: Each row of the matrix must have the same size
+
+>>> matrix_divided([[1]], 2)
+[[0.5]]
+
+>>> matrix_divided([[1, 2, 3],[4, 5, 6]], -2)
+[[-0.5, -1.0, -1.5], [-2.0, -2.5, -3.0]]

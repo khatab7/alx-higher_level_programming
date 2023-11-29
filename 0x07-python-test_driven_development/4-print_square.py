@@ -1,22 +1,22 @@
 #!/usr/bin/python3
-"""A Module built for 0x07
+"""4-print_square.py
+    This module contains a function 'print_square'
+    you can test the function with the command
+
+    python3 -m doctest -v ./test/4-print_square.txt
 """
 
-def print_square(size: int) -> None:
-    """Function that prints a square of a given size in '#' characters.
 
+def print_square(size):
+    """Prints a square with the character #
     Args:
-        size (int): Length of the side of the square, in monospace characters.
-
-    Raises:
-        TypeError: If size is not an integer.
-        ValueError: If size is less than 0.
-
+        size (int): size of the square
     """
-    if not isinstance(size, int):
-        raise TypeError('size must be an integer')
+    if isinstance(size, int) is False:
+        raise TypeError("size must be an integer")
     if size < 0:
-        raise ValueError('size must be >= 0')
-
-    for _ in range(size):
-        print('#' * size)
+        raise ValueError("size must be >= 0")
+    for i in range(size):
+        for j in range(size):
+            print('#', end='')
+        print()

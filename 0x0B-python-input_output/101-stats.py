@@ -1,59 +1,69 @@
 #!/usr/bin/python3
-"""This module contains a script that reads stdin line by line
-and computes metrics:
+"""
+Log Parsing
 
-Input format: '<IP Address> - [<date>] "GET /projects/260 HTTP/1.1"
-<status code> <file size>'
+This script parses a log of HTTP GET request results from stdin and tabulates
+the total counts of status codes appearing in each response, as well as the
+total file size across all requests.
 
-Each 10 lines and after a keyboard interruption (CTRL + C), prints those
-statistics since the beginning:
-Total file size: File size: <total size>
-where is the sum of all previous (see input format above)
-Number of lines by status code:
-possible status code: 200, 301, 400, 401, 403, 404, 405 and 500
-if a status code doesn’t appear, don’t print anything for this status code
-format: <status code>: <number>
-status codes should be printed in ascending order
+Example of expected log line input:
+128.230.61.246 - [2017-02-05 23:31:23.258076] "GET /projects/260 HTTP/1.1" 301 292
+
+Fields:
+<IP Address> - [<Date>] "<GET request>" <Response status code> <File size>
 """
 
-import sys
 
-file_size = 0
-status_codes = {"200": 0,
-                "301": 0,
-                "400": 0,
-                "401": 0,
-                "403": 0,
-                "404": 0,
-                "405": 0,
-                "500": 0}
-it = 0
+def print_log_totals(total_file_size, code_counts):
+    print(f"File size: {total_file_size}")
+    for code, count in code_counts.items():
+        if count > 0:
+            print(f"{code}: {count}")
 
 
-def print_stats():
-    """Prints current statistics"""
-    print(f'File size: {file_size}')
-    for key, value in status_codes.items():
-        if value > 0:
-            print(f'{key}: {value}')
+if __name__ == '__main__':
+    from sys import argv, stdin, stderr
+    from collections import OrderedDict
+    from datetime import datetime
 
+    line_no = 0
+    total_file_size = 0
+    code_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0, 404: 0, 405: 0, 500: 0}
 
-try:
-    for line in sys.stdin:
-        if it != 0 and it % 10 == 0:
-            print_stats()
-        content = line.split()
-        try:
-            if content[-2] in status_codes:
-                status_codes[content[-2]] += 1
-        except Exception as e:
-            pass
-        try:
-            file_size += int(content[-1])
-        except Exception as e:
-            pass
-        it += 1
-    print_stats()
-except KeyboardInterrupt:
-    print_stats()
-    raise
+    try:
+        for line in stdin:
+            line_no += 1
+
+            components = line.split('-', 1)
+            if len(components) != 2:
+                continue
+
+            timestamp = components[1].split(']')[0].strip(' []')
+            try:
+                datetime.strptime(timestamp, '%Y-%m-%d %H:%M:%S.%f')
+            except ValueError:
+                stderr.write(f"{argv[0]}: {line_no}: invalid timestamp\n")
+                continue
+
+            url_components = components[1].split('"')[1:]
+            if url_components[0] != 'GET /projects/260 HTTP/1.1':
+                stderr.write(f"{argv[0]}: {line_no}: unexpected HTTP request\n")
+                continue
+
+            status_code, file_size = url_components[1].strip().split(' ')
+            
+            if status_code.isdigit():
+                code = int(status_code)
+                code_counts[code] += 1
+
+            if file_size.isdigit():
+                total_file_size += int(file_size)
+
+            if line_no % 10 == 0:
+                print_log_totals(total_file_size, code_counts)
+        
+        print_log_totals(total_file_size, code_counts)
+
+    except KeyboardInterrupt:
+        print_log_totals(total_file_size, code_counts)
+        raise

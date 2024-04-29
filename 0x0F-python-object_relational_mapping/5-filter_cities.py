@@ -1,31 +1,28 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/python3
+"""list citys"""
 import MySQLdb
 import sys
 
 
-if __name__ == "__main__":
-    if len(sys.argv) < 5:
-        print("Usage: ./<script-name>.py [username] [password] "
-              "[database] [state]")
-        sys.exit()
+def main():
+    username, password, database, state = sys.argv[1:]
+    conn = MySQLdb.connect(
+        host="localhost", user=username, password=password, db=database
+    )
+    cur = conn.cursor()
+    query = "SELECT cities.name \
+        FROM cities \
+        JOIN states ON cities.state_id = states.id \
+        WHERE states.name = %s \
+        ORDER BY cities.id ASC"
+    cur.execute(query, (state,))
+    cities = [row[0] for row in cur.fetchall()]
 
-    db = MySQLdb.connect(host="localhost", port=3306, user=sys.argv[1],
-                         passwd=sys.argv[2], db=sys.argv[3])
-    cur = db.cursor()
-    cur.execute("SELECT b.name "
-                "FROM states a "
-                "LEFT JOIN cities b "
-                "ON a.id = b.state_id "
-                "WHERE a.name = %s "
-                "ORDER BY b.id ASC",
-                (sys.argv[4], ))
-    query_rows = cur.fetchall()
-    query_len = len(query_rows)
-    for i in range(query_len):
-        if i < query_len - 1:
-            print(query_rows[i][0], end=', ')
-        else:
-            print(query_rows[i][0])
+    # Print the results as comma-separated string
+    print(', '.join(cities))
     cur.close()
-    db.close()
+    conn.close()
+
+
+if __name__ == "__main__":
+    main()

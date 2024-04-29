@@ -1,23 +1,25 @@
 #!/usr/bin/python3
-"""Start link class to table in database
-"""
-import sys
+"""lists all State objects from the database hbtn_0e_6_usa"""
 from model_state import Base, State
+import sqlalchemy as sql
+from sqlalchemy.ext.declarative import declarative_base
+import sys
 
-from sqlalchemy import (create_engine)
-from sqlalchemy.orm import sessionmaker
+
+def main():
+    username, password, database = sys.argv[1:]
+    engine = sql.create_engine('mysql://{}:{}@localhost:\
+        3306/{}'.format(username, password, database))
+    Base.metadata.create_all(engine)
+
+    with engine.connect() as conn:
+        result = conn.execute(sql.select(State).order_by(State.id))
+        row = result.fetchone()
+        try:
+            print("{}: {}".format(row[0], row[1]))
+        except TypeError:
+            print("Nothing")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 4:
-        print("Usage: ./<script-name>.py [username] [password] [database]")
-        sys.exit()
-    engine = create_engine('mysql+mysqldb://{}:{}@localhost/{}'.format(
-        sys.argv[1], sys.argv[2], sys.argv[3]), pool_pre_ping=True)
-    Base.metadata.create_all(engine)
-
-    Session = sessionmaker(bind=engine)
-    session = Session()
-
-    instance = session.query(State).order_by(State.id).first()
-    print(f"{instance.id}: {instance.name}")
+    main()

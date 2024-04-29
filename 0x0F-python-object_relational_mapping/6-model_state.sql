@@ -1,4 +1,4 @@
 -- Create databasehbtn_0e_6_usa
-CREATE databaseIF NOT EXISTS hbtn_0e_6_usa;
+CREATE database IF NOT EXISTS hbtn_0e_6_usa;
 USE hbtn_0e_6_usa;
 SHOW CREATE TABLE states;

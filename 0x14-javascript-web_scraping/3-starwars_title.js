@@ -1,13 +1,16 @@
 #!/usr/bin/node
 
-const axios = require('axios');
-const argv = process.argv;
+const request = require('request');
+const episodeNum = process.argv[2];
+const API_URL = 'https://swapi-api.hbtn.io/api/films/';
 
-axios
-  .get(`https://swapi-api.hbtn.io/api/films/${argv[2]}`)
-  .then(res => {
-    console.log(res.data.title);
-  })
-  .catch(error => {
-    console.log(`code: ${error}`);
-  });
+request(API_URL + episodeNum, function (err, response, body) {
+  if (err) {
+    console.log(err);
+  } else if (response.statusCode === 200) {
+    const responseJSON = JSON.parse(body);
+    console.log(responseJSON.title);
+  } else {
+    console.log('Error code: ' + response.statusCode);
+  }
+});
